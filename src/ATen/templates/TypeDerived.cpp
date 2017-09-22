@@ -13,8 +13,7 @@
 
 namespace at {
 
-${Type}::${Type}(Context* context)
-: Type(context) {}
+${Type}::${Type}(Context* context) : Type(context) {}
 ScalarType ${Type}::scalarType() const {
   return ScalarType::${ScalarName};
 }

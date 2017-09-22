@@ -14,14 +14,14 @@ namespace at {
 static inline void errorHandler(const char * msg, void * data) {
   throw std::runtime_error(msg);
 }
+
 static inline void argErrorHandler(int arg, const char * msg, void * data) {
   std::stringstream new_error;
   new_error << "invalid argument " << arg << ": " << msg;
   throw std::runtime_error(new_error.str());
 }
 
-Context::Context()
-: thc_state(nullptr) {
+Context::Context() : thc_state(nullptr) {
 
   THSetDefaultErrorHandler(errorHandler,nullptr);
   THSetDefaultArgErrorHandler(argErrorHandler,nullptr);
@@ -30,6 +30,7 @@ Context::Context()
     .reset(new CPUGenerator(this));
   Type::registerAll(this);
 }
+
 void Context::doInitCUDA() {
 #ifdef AT_CUDA_ENABLED
   thc_state = THCState_alloc();
@@ -40,6 +41,7 @@ void Context::doInitCUDA() {
     .reset(new CUDAGenerator(this));
 #endif
 }
+
 Context::~Context() {
 #ifdef AT_CUDA_ENABLED
   if(thc_state)

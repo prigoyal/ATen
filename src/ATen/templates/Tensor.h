@@ -27,30 +27,32 @@ struct Type;
 // special care must be taken to handle this.
 struct Tensor {
 
-  Tensor()
-  : pImpl(nullptr){}
-  explicit Tensor(TensorImpl * self, bool retain)
-  : pImpl(self) {
+  Tensor() : pImpl(nullptr) {}
+
+  explicit Tensor(TensorImpl * self, bool retain) : pImpl(self) {
     if(pImpl != nullptr && retain)
       pImpl->retain();
   }
-  Tensor(Tensor const & rhs)
-  : pImpl(rhs.pImpl) {
+
+  Tensor(Tensor const & rhs) : pImpl(rhs.pImpl) {
     if(pImpl != nullptr)
       pImpl->retain();
   }
-  Tensor(Tensor && rhs) noexcept
-  : pImpl(rhs.pImpl) {
+
+  Tensor(Tensor && rhs) noexcept : pImpl(rhs.pImpl) {
     rhs.pImpl = nullptr;
   }
+
   ~Tensor() {
     if(pImpl != nullptr)
       pImpl->release();
   }
+
   Tensor & operator=(Tensor && rhs) & {
     rhs.swap(*this);
     return *this;
   }
+
   Tensor & operator=(Tensor const & rhs) & {
       //Tensor ctor retains original rhs.pImpl
       //then rhs.pImpl is swapped with this->pImpl
@@ -58,67 +60,87 @@ struct Tensor {
       Tensor(rhs).swap(*this);
       return *this;
   }
+
   Tensor & operator=(Tensor const & rhs) && {
     return assign_(rhs);
   }
+
   Tensor & operator=(Scalar v) &&;
+
   Tensor & assign_(Scalar v);
+
   void reset() {
     Tensor().swap(*this);
   }
+
   void reset(TensorImpl * rhs) {
     Tensor(rhs,true).swap(*this);
   }
+
   void reset(TensorImpl * rhs, bool retain) {
     Tensor(rhs, retain).swap(*this );
   }
+
   TensorImpl * get() const {
     return pImpl;
   }
+
   TensorImpl * detach() {
     TensorImpl * ret = pImpl;
     pImpl = nullptr;
     return ret;
   }
+
   bool defined() const {
     return pImpl != nullptr;
   }
+
   void swap(Tensor & rhs) {
     TensorImpl * tmp = pImpl;
     pImpl = rhs.pImpl;
     rhs.pImpl = tmp;
   }
+
   const char * toString() const {
     return pImpl->toString();
   }
+
   IntList sizes() const {
     return pImpl->sizes();
   }
+
   IntList strides() const {
     return pImpl->strides();
   }
+
   int64_t dim() const {
     return pImpl->dim();
   }
+
   int64_t ndimension() const {
     return dim();
   }
+
   Type & type() const {
     return pImpl->type();
   }
+
   Tensor toType(const Type & t) const {
     if(type().ID() ==t.ID())
       return *this;
     return t.copy(*this);
   }
+
   Tensor & copy_(const Tensor & src) {
     resize_(src.sizes());
     type().copy(src,*this);
     return *this;
   }
+
   Tensor toType(ScalarType t) const {
     return toType(type().toScalarType(t));
   }
+
   Tensor toBackend(Backend b) const {
     return toType(type().toBackend(b));
   }

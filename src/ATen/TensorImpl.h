@@ -9,8 +9,7 @@ namespace at {
 struct Type;
 class Scalar;
 struct TensorImpl {
-  explicit TensorImpl(Type * type)
-  :  refcount(1), is_scalar(false), type_(type) {}
+  explicit TensorImpl(Type * type) :  refcount(1), is_scalar(false), type_(type) {}
   Type & type() const {
     return *type_;
   }
