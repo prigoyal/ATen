@@ -1,5 +1,5 @@
 #include "ATen/ATen.h"
-#include "ATen/dlconvertor.h"
+#include "ATen/DLConverter.h"
 
 #include <iostream>
 #include <string.h>

@@ -1,4 +1,4 @@
-#include "ATen/dlconvertor.h"
+#include "ATen/DLConverter.h"
 
 #include <iostream>
 #include <sstream>
